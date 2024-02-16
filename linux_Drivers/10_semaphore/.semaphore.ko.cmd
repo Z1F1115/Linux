@@ -1,1 +1,0 @@
-cmd_/home/zjf/linux/linux_Drivers/9.1_semaphore/semaphore.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/9.1_semaphore/semaphore.ko /home/zjf/linux/linux_Drivers/9.1_semaphore/semaphore.o /home/zjf/linux/linux_Drivers/9.1_semaphore/semaphore.mod.o
