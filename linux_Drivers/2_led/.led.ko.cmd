@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/2_led/led.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/2_led/led.ko /home/zjf/linux/linux_Drivers/2_led/led.o /home/zjf/linux/linux_Drivers/2_led/led.mod.o

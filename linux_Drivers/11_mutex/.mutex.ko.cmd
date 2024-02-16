@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/11_mutex/mutex.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/11_mutex/mutex.ko /home/zjf/linux/linux_Drivers/11_mutex/mutex.o /home/zjf/linux/linux_Drivers/11_mutex/mutex.mod.o

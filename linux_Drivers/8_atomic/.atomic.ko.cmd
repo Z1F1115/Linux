@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/8_atomic/atomic.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/8_atomic/atomic.ko /home/zjf/linux/linux_Drivers/8_atomic/atomic.o /home/zjf/linux/linux_Drivers/8_atomic/atomic.mod.o

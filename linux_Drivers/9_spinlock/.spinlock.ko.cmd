@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/9_spinlock/spinlock.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/9_spinlock/spinlock.ko /home/zjf/linux/linux_Drivers/9_spinlock/spinlock.o /home/zjf/linux/linux_Drivers/9_spinlock/spinlock.mod.o

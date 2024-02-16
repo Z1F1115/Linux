@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/4_dtsof/dtsof.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/4_dtsof/dtsof.ko /home/zjf/linux/linux_Drivers/4_dtsof/dtsof.o /home/zjf/linux/linux_Drivers/4_dtsof/dtsof.mod.o
