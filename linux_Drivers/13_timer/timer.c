@@ -19,6 +19,10 @@
 #define TIMER_CNT      1
 #define TIMER_NAME    "timer"
 
+#define CLOSE_CMD       _IO(0XEF,1)        //关闭命令
+#define OPEN_CMD        _IO(0XEF,2)        //打开命令
+#define SETPERIOD_CMD   _IOW(0XEF,3,int)   //设置周期
+
 /* timer设备结构体 */
 struct timer_dev
 {
@@ -29,8 +33,10 @@ struct timer_dev
     struct class *class;
     struct device *device;
     struct device_node *nd;
-    struct timer_list timer;    /* 定时器 */   
     int led_gpio; 
+    struct timer_list timer;    /* 定时器 */
+    int timeperiod;             /* 定时周期ms */    
+    spinlock_t lock;
 };
 
 struct timer_dev timerdev;
@@ -45,31 +51,45 @@ static int timer_release(struct inode *inode,struct file *filp){
     return 0;
 }
 
-static ssize_t timer_write(struct file *filp,const char __user *buf,
-            size_t count,loff_t *ppos)
-{
+static long timer_ioctl(struct file *filp,unsigned int cmd,unsigned long arg){
+    struct timer_dev *dev = filp->private_data;
     int ret = 0;
-    
-    
+    int value = 0;
+    int timerperiod;
+	unsigned long flags;
+
+    switch(cmd){
+        case CLOSE_CMD:
+            del_timer_sync(&dev->timer);
+            break;
+        case OPEN_CMD:
+            spin_lock_irqsave(&dev->lock, flags);
+			timerperiod = dev->timeperiod;
+			spin_unlock_irqrestore(&dev->lock, flags);
+            mod_timer(&dev->timer,jiffies + (msecs_to_jiffies(timerperiod)));
+            break;
+        case SETPERIOD_CMD:
+            ret = copy_from_user(&value,(int *)arg,sizeof(int));
+            if(ret < 0){
+                return -EFAULT;
+            }
+
+            spin_lock_irqsave(&dev->lock, flags);
+			dev->timeperiod = value;
+			spin_unlock_irqrestore(&dev->lock, flags);
+            mod_timer(&dev->timer,jiffies + (msecs_to_jiffies(value)));
+            break;
+        
+    }
 
     return ret;
 }
 
-static ssize_t timer_read(struct file *filp, char __user *buf,size_t count,loff_t *ppos){
-    
-    
-    int ret = 0;
-
-    
-
-    return ret;
-}
 
 static const struct file_operations timer_fops = {
     .owner      =   THIS_MODULE,
-    .write      =   timer_write,
-    .read       =   timer_read,
     .open       =   timer_open,
+    .unlocked_ioctl = timer_ioctl,
     .release    =   timer_release,
 };
 
@@ -77,10 +97,17 @@ static const struct file_operations timer_fops = {
 static void timer_func(unsigned long arg){
     struct timer_dev *dev = (struct timer_dev*)arg;
     static int sta = 1;
+    int timerperiod;
+	unsigned long flags;
+
     sta = !sta;
     gpio_set_value(dev->led_gpio,sta);
-    
-    mod_timer(&dev->timer,jiffies + (msecs_to_jiffies(500)));
+
+    /* 重启定时器 */
+	spin_lock_irqsave(&dev->lock, flags);
+	timerperiod = dev->timeperiod;
+	spin_unlock_irqrestore(&dev->lock, flags);
+    mod_timer(&dev->timer,jiffies + (msecs_to_jiffies(timerperiod)));
 }
 
 /* 初始化LED */
@@ -126,7 +153,8 @@ fail_nd:
 static int __init timer_init(void){
     int ret = 0;
 
-    
+    /* 初始化自旋锁 */
+	spin_lock_init(&timerdev.lock);
 
     /* 1.注册字符设备驱动 */
     timerdev.major = 0;
@@ -177,11 +205,12 @@ static int __init timer_init(void){
     /* 7.初始化定时器 */
     init_timer(&timerdev.timer);
 
-    timerdev.timer.expires = jiffies + (msecs_to_jiffies(500));
+    timerdev.timeperiod = 500;
+    timerdev.timer.expires = jiffies + (msecs_to_jiffies(timerdev.timeperiod));
     timerdev.timer.function = timer_func;
     timerdev.timer.data = (unsigned long )&timerdev;
     /* 添加到系统 */
-    add_timer(&timerdev.timer);
+    // add_timer(&timerdev.timer);
 
     return 0;
 
