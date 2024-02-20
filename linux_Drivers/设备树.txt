@@ -1,0 +1,70 @@
+/（根目录下）{
+	...
+
+	/* zjf 2024/2/13 */
+	zjfled {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "zjf,zjfled";
+		status = "okay";
+		reg = <		0X020C406C  0X04 	/* CCM_CCGR1_BASE */
+							0X020E0068	0X04	/* SW_MUX_GPI01_IO03_BASE */
+							0X020E02F4	0X04	/* SW_PAD_GPIO1_IO03_BASE */
+							0X0209C000	0X04	/* GPIO1_DR_BASE */
+							0X0209C004	0X04>;	/* GPIO1_GDIR_BASE */
+	};
+
+	/* LED */
+	gpioled{
+		compatible = "zjf,gpioled";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpioled>;
+		led-gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
+		status = "okay";
+	};
+
+	/* BEEP */
+	beep{
+		compatible = "zjf,beep";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_beep>;
+		beep-gpios = <&gpio5 1 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+
+	/* key */
+	key{
+		compatible = "zjf,key";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_key>;
+		key-gpios = <&gpio1 18 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+		interrupt-parent = <&gpio1>;
+		interrupts = <18 IRQ_TYPE_EDGE_BOTH>;
+	};
+
+}
+
+
+&iomuxc {
+	/* led的子节点 */
+		pinctrl_gpioled: ledgrp{
+			fsl,pins = <
+				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03		0X10B0
+			>;
+		};
+
+		/* zhongjunfeng 蜂鸣器 */
+		pinctrl_beep: beepgrp{
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01		0X10B0
+			>;
+		};
+
+		/* zhongjunfeng key */
+		pinctrl_key: keygrp{
+			fsl,pins = <
+				MX6UL_PAD_UART1_CTS_B__GPIO1_IO18		0XF080
+			>;
+		};
+}
