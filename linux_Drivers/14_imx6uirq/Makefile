@@ -2,7 +2,7 @@ KERNELDIR := /home/zjf/linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_zjf
 
 CURRENT_PATH := $(shell pwd)
 
-obj-m := imx6uirq.o tasklet.o
+obj-m := imx6uirq.o tasklet.o work.o
 
 build: kernel_modules
  
