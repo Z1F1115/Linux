@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/15_blockio/imx6uirq.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/15_blockio/imx6uirq.ko /home/zjf/linux/linux_Drivers/15_blockio/imx6uirq.o /home/zjf/linux/linux_Drivers/15_blockio/imx6uirq.mod.o
