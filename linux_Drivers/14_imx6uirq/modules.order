@@ -1,1 +1,2 @@
 kernel//home/zjf/linux/linux_Drivers/14_imx6uirq/imx6uirq.ko
+kernel//home/zjf/linux/linux_Drivers/14_imx6uirq/tasklet.ko

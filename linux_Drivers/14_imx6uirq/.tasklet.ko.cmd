@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/14_imx6uirq/tasklet.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/14_imx6uirq/tasklet.ko /home/zjf/linux/linux_Drivers/14_imx6uirq/tasklet.o /home/zjf/linux/linux_Drivers/14_imx6uirq/tasklet.mod.o
