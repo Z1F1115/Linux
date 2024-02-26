@@ -68,3 +68,29 @@
 			>;
 		};
 }
+
+
+linux内核自带的LED驱动，在设备树下添加：
+/（根目录）{
+	dtsled {
+		compatible = "gpio-leds";
+
+		led0 {
+			label = "red";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpioled>;
+			gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+			linux,default-trigger = "heartbeat";
+		};
+	};
+}
+
+如果需要操控开灯或关灯可以在：
+/sys/devices/platform/dtsled/leds/red目录下
+先控制trigger停止心跳，
+echo none > trigger			//关闭心跳闪烁
+echo heartbeat > trigger		//打开心跳闪烁
+然后再控制brightness开灯和关灯。
+echo 1 > brightness			//开灯
+echo 0 > brightness			//关灯
