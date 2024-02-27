@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/21_input/keyinput.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/21_input/keyinput.ko /home/zjf/linux/linux_Drivers/21_input/keyinput.o /home/zjf/linux/linux_Drivers/21_input/keyinput.mod.o
