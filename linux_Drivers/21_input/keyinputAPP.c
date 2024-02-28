@@ -7,19 +7,21 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/ioctl.h>
+#include <linux/input.h>
 
 /**
  * argc
  * argv
- * ./imx6uirqAPP <filename> 
- * ./imx6uirqAPP /dev/imx6uirq
+ * ./keyinputAPP <filename> 
+ * ./keyinputAPP /dev/input/event1
  * */
+
+/* input_event结构体 */
+static struct input_event inputevent;
+
 int main(int argc,char **argv){
-    int fd,ret;
-    char *filename;
-    unsigned char data;
-    
-    
+    int fd,err;
+    char *filename; 
 
     if(argc != 2){
         printf("Error Usage!\r\n");
@@ -34,16 +36,27 @@ int main(int argc,char **argv){
         return -1;
     }
 
-    /* 循环读取 */
-    while (1)
-    {
-        ret = read(fd ,&data,sizeof(data));
-        if(ret < 0){
-
-        }else {
-            if(data){
-                printf("key value = %#x\r\n",data);
+    while(1){
+        err = read(fd,&inputevent,sizeof(inputevent));
+        if(err > 0){     /* 数据读取成功 */
+            switch(inputevent.type){
+                case EV_KEY:
+                    if(inputevent.code < BTN_MISC){     /* KEY */
+                        printf("key %d %s\r\n",inputevent.code,inputevent.value?"press":"release");
+                    }else{
+                        printf("button %d %s\r\n",inputevent.code,inputevent.value?"press":"release");
+                    }
+                    break;
+                case EV_SYN:
+                
+                    break;
+                case EV_REL:
+                    break;
+                case EV_ABS:
+                    break;
             }
+        } else{     /*  */
+            printf("数据读取失败！\r\n");
         }
     }
     

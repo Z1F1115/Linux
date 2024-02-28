@@ -30,7 +30,7 @@
 struct irq_keydesc{
     int gpio;               /* io编号 */
     int irqnum;             /* 中断号 */
-    unsigned char value;    /* 键值 */
+    unsigned int value;    /* 键值 */
     char name[10];          /* 名字 */
     irqreturn_t (*handler)(int,void *);/* 中断处理函数 */   
 };
@@ -66,10 +66,10 @@ void timer_func(unsigned long arg){
     value = gpio_get_value(dev->irqkey[0].gpio);
     if(value == 0){     /* 按下 */
         /* 上报按键值 */
-        input_event(dev->inputdev,EV_KEY,KEY_0,1);
+        input_event(dev->inputdev,EV_KEY,BTN_0,1);
     }else if(value == 1){       /* 释放 */
         /* 上报按键值 */
-        input_event(dev->inputdev,EV_KEY,KEY_0,0);
+        input_event(dev->inputdev,EV_KEY,BTN_0,0);
     }
     input_sync(dev->inputdev);
 }
@@ -115,7 +115,7 @@ static int keyio_init(struct keyinput_dev *dev){
     }
 
     dev->irqkey[0].handler = key0_handler;
-    dev->irqkey[0].value = KEY_0;
+    dev->irqkey[0].value = BTN_0;
     /*2.按键中断初始化*/
     for(i = 0;i<KEY_NUM;i++){
         ret = request_irq(dev->irqkey[i].irqnum,dev->irqkey[i].handler,
@@ -164,7 +164,7 @@ static int __init keyinput_init(void){
     keyinputdev.inputdev->name = KEYINPUT_NAME;
     __set_bit(EV_KEY,keyinputdev.inputdev->evbit);  /* 按键事件 */
     __set_bit(EV_REP,keyinputdev.inputdev->evbit);  /* 重复事件 */
-    __set_bit(KEY_0,keyinputdev.inputdev->keybit);  /* 按键值 */
+    __set_bit(BTN_0,keyinputdev.inputdev->keybit);  /* 按键值 */
 
     /* 注册 */
     ret = input_register_device(keyinputdev.inputdev);
