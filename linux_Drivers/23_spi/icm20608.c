@@ -133,31 +133,42 @@ static int icm20608_read_regs(struct icm20608_dev *dev, u8 reg, void *buf,int le
     struct spi_device *spi = (struct spi_device *)dev->private_data;
 
     /* 片选拉低 */
-    gpio_set_value(dev->cs_gpio,0);
+    // gpio_set_value(dev->cs_gpio,0);
     
     data = reg | 0x80;
-    spi_write(spi, &data, 1);        /* 发送要读取的寄存器地址 */
-    spi_read(spi, buf, len);     /*读取数据*/
+    spi_write_then_read(spi, &data, 1, buf, len);
+    
+    // spi_write(spi, &data, 1);        /* 发送要读取的寄存器地址 */
+    // spi_read(spi, buf, len);     /*读取数据*/
 
     /* 片选拉高 */
-    gpio_set_value(dev->cs_gpio,1);
+    // gpio_set_value(dev->cs_gpio,1);
     return 0;
 }
 
 /* SPI写寄存器 */
 static int icm20608_write_regs(struct icm20608_dev *dev, u8 reg, u8 *buf,int len){
     u8 data = 0;
+    u8 *txdata;
     struct spi_device *spi = (struct spi_device *)dev->private_data;
 
     /* 片选拉低 */
-    gpio_set_value(dev->cs_gpio,0);
+    // gpio_set_value(dev->cs_gpio,0);
     
-    data = reg & ~0x80;
-    spi_write(spi, &data, 1);        /* 发送要写的寄存器地址 */
-    spi_write(spi, &buf, len);        /* 发送要写的数据 */
+    txdata = kzalloc(len + 1, GFP_KERNEL);
+
+    txdata[0] = reg & ~0x80;
+    memcpy(&txdata[1], buf, len);
+
+    spi_write(spi,txdata,len + 1);
+
+    // data = reg & ~0x80;
+    // spi_write(spi, &data, 1);        /* 发送要写的寄存器地址 */
+    // spi_write(spi, &buf, len);        /* 发送要写的数据 */
 
     /* 片选拉高 */
-    gpio_set_value(dev->cs_gpio,1);
+    // gpio_set_value(dev->cs_gpio,1);
+    kfree(txdata);
     return 0;
 }
 
@@ -300,6 +311,7 @@ static int icm20608_probe(struct spi_device *spi){
         goto fail_device;
 	}
 
+#if 0
     /* 获取片选引脚 */
     icm20608dev.nd = of_get_parent(spi->dev.of_node);
 
@@ -320,6 +332,7 @@ static int icm20608_probe(struct spi_device *spi){
         
         goto fail_setoutput;
     }
+#endif 
 
     /* 初始化spi_device */
     spi->mode = SPI_MODE_0;
@@ -332,9 +345,9 @@ static int icm20608_probe(struct spi_device *spi){
     icm20608_reginit(&icm20608dev);
 
     return 0;
-fail_setoutput:
-    gpio_free(icm20608dev.cs_gpio);
-fail_gpio:
+// fail_setoutput:
+//     gpio_free(icm20608dev.cs_gpio);
+// fail_gpio:
 fail_device:
     class_destroy(icm20608dev.class);
 fail_class:
@@ -351,7 +364,7 @@ static int icm20608_remove(struct spi_device *spi){
     unregister_chrdev_region(icm20608dev.devid,ICM20608_CNT);
     device_destroy(icm20608dev.class, icm20608dev.devid);
     class_destroy(icm20608dev.class);
-    gpio_free(icm20608dev.cs_gpio);
+    // gpio_free(icm20608dev.cs_gpio);
     return ret;
 }
 
