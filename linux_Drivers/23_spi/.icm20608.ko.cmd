@@ -1,0 +1,1 @@
+cmd_/home/zjf/linux/linux_Drivers/23_spi/icm20608.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/zjf/linux/linux_Drivers/23_spi/icm20608.ko /home/zjf/linux/linux_Drivers/23_spi/icm20608.o /home/zjf/linux/linux_Drivers/23_spi/icm20608.mod.o
