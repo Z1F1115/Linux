@@ -39,7 +39,7 @@ int main(int argc,char **argv){
     }
 
     while(1){
-        #if 0
+        
         err = read(fd, data, sizeof(data));
         if(err == 0){
             ir = data[0];
@@ -47,22 +47,22 @@ int main(int argc,char **argv){
             ps = data[2];
             printf("AP3216C ir = %d ,als = %d ,ps = %d\r\n",ir,als,ps);
         }
-        #endif
-
+        
+#if 0
         err = read(fd, mpu6050_data, sizeof(mpu6050_data));
         if(err == 0){
-            acc_x = mpu6050_data[0];
-            acc_y = mpu6050_data[1];
-            acc_z = mpu6050_data[2];
-            temp = mpu6050_data[3];
-            gyr_x = mpu6050_data[4];
-            gyr_y = mpu6050_data[5];
-            gyr_z = mpu6050_data[6];
+            gyr_x = mpu6050_data[0];
+            gyr_y = mpu6050_data[1];
+            gyr_z = mpu6050_data[2];
+            acc_x = mpu6050_data[3];
+            acc_y = mpu6050_data[4];
+            acc_z = mpu6050_data[5];
+            temp = mpu6050_data[6];
             printf("ACC_X = %d , ACC_Y = %d , ACC_Z = %d\r\n",acc_x,acc_y,acc_z);
             printf("GYR_X = %d , GYR_Y = %d , GYR_Z = %d\r\n",gyr_x,gyr_y,gyr_z);
             printf("TEMP = %d \r\n",temp);
         }
-
+#endif
         usleep(200000);     /* 200ms */
     }
 

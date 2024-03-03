@@ -153,17 +153,17 @@ static int mpu6050_read(struct file *filp, char __user *buf,size_t cnt,loff_t *o
 
     /* 向应用返回MPU6050的原始数据 */
     MPU6050_Readdata(dev);
-    data[0] = dev->acc_x;
-    data[1] = dev->acc_y;
-    data[2] = dev->adc_z;
-    data[3] = dev->temp;
-    data[4] = dev->gyr_x;
-    data[5] = dev->gyr_y;
-    data[6] = dev->gyr_z;
+    data[0] = dev->gyr_x;
+    data[1] = dev->gyr_y;
+    data[2] = dev->gyr_z;
+    data[3] = dev->acc_x;
+    data[4] = dev->acc_y;
+    data[5] = dev->adc_z;
+    data[6] = dev->temp;
     
-    printk("ACC_X = %d , ACC_Y = %d , ACC_Z = %d\r\n",data[0],data[1],data[2]);
-    printk("GYR_X = %d , GYR_Y = %d , GYR_Z = %d\r\n",data[4],data[5],data[6]);
-    printk("TEMP = %d \r\n",data[3]);
+    // printk("GYR_X = %d , GYR_Y = %d , GYR_Z = %d\r\n",data[0],data[1],data[2]);
+    // printk("ACC_X = %d , ACC_Y = %d , ACC_Z = %d\r\n",data[3],data[4],data[5]);
+    // printk("TEMP = %d \r\n",data[6]);
 
     err = copy_to_user(buf,data,sizeof(data));
 
