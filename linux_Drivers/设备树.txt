@@ -94,3 +94,21 @@ echo heartbeat > trigger		//打开心跳闪烁
 然后再控制brightness开灯和关灯。
 echo 1 > brightness			//开灯
 echo 0 > brightness			//关灯
+
+
+
+linux串口开启，需要在设备树的iomuxc下添加：
+		/* zhongjunfeng uart3 */
+		pinctrl_uart3: uart3grp {
+			fsl,pins = <
+				MX6UL_PAD_UART3_TX_DATA__UART3_DCE_TX	   	0x1b0b1
+				MX6UL_PAD_UART3_RX_DATA__UART3_DCE_RX		0x1b0b1
+			>;
+		};
+还需要添加节点：
+/* zhongjunfeng  */
+&uart3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart3>;
+	status = "okay";
+};
