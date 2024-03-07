@@ -1,3 +1,4 @@
+一、
 /（根目录下）{
 	...
 
@@ -70,6 +71,7 @@
 }
 
 
+二、
 linux内核自带的LED驱动，在设备树下添加：
 /（根目录）{
 	dtsled {
@@ -96,7 +98,7 @@ echo 1 > brightness			//开灯
 echo 0 > brightness			//关灯
 
 
-
+三、
 linux串口开启，需要在设备树的iomuxc下添加：
 		/* zhongjunfeng uart3 */
 		pinctrl_uart3: uart3grp {
@@ -112,3 +114,35 @@ linux串口开启，需要在设备树的iomuxc下添加：
 	pinctrl-0 = <&pinctrl_uart3>;
 	status = "okay";
 };
+
+四、
+触摸屏，需要在设备树下的&iomuxc下添加：
+/* zhongjunfeng INT */
+		pinctrl_tsc: tscgrp{
+			fsl,pins = <
+				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09				0X10B0
+			>;
+		};
+还需要在&iomuxc_snvs下添加：
+/*zhongjunfeng MT RST */
+		pinctrl_tsc_reset: tsc_reset{
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09		0x10B0
+			>;
+		};
+最后在&i2c2节点下添加：
+/* zhongjunfeng 4.3寸GT9147 */
+	gt9147:gt9147@14 {
+		compatible = "edt,edt-gt9147";
+		reg = <0x14>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_tsc
+									&pinctrl_tsc_reset>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <9 0>;
+		reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
+		interrupt-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+		status = "okay";
+	};
+注意在&lcdif节点下需要对应所用的屏幕参数。
+
